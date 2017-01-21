@@ -2,7 +2,7 @@ name := "htwg-set-game-scala-wui"
 organization := "de.htwg.se"
 version := "0.0.1"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(SbtTwirl)
 
 scalaVersion := "2.11.8"
 
