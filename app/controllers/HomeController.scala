@@ -3,6 +3,8 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import play.api.libs.iteratee._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -17,8 +19,24 @@ class HomeController @Inject() extends Controller {
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+  def index = Action { request =>
+    Ok(views.html.index("Set - The Game")).withSession("connected" -> "user@gmail.com")
   }
 
+  /**
+    *
+    * @return
+    */
+  def ws: WebSocket = WebSocket.using[String] { request =>
+
+    // Log events to the console
+    val in = Iteratee.foreach[String](println).map { _ =>
+      println("Disconnected")
+    }
+
+    // Send a single 'Hello!' message
+    val out = Enumerator("Hello!")
+
+    (in, out)
+  }
 }

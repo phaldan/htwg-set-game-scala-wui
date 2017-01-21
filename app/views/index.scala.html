@@ -1,20 +1,90 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+@(title: String)
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
+<!DOCTYPE html>
+<html ng-app="setGameApp">
+    <head>
+        <meta charset="utf-8">
+        <title>@title</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-select.css")" />
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#/">@title</a>
+                </div>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+                <ul class="nav navbar-nav">
+                    <li><a href="#/help"><i class="fa fa-question fa-lg"></i> <b>Help</b></a></li>
+                    <li><a href="" data-toggle="modal" data-target="#kiModal"><i class="fa fa-user-plus fa-lg"></i> <b>Activate AI</b></a></li>
+                    <li><a href="" data-toggle="modal" data-target="#myModal"><i class="fa fa-folder-open fa-lg"></i> <b>Load Game</b></a></li>
+                    <li ng-controller="RestartCtrl"><a ng-click="click()" href="#/"><i class="fa fa-power-off fa-lg"></i> <b>Restart</b></a></li>
+                    <li><a href="#/about"><i class="fa fa-info fa-lg"></i> <b>About</b></a></li>
+                </ul>
 
-}
+                <ul class="nav navbar-nav navbar-right js-points" ng-controller="PointsCtrl">
+                    <li class="navbar-text"><i class="fa fa-user fa-lg"></i> <b>Player 1:</b> {{points.player1}}</li>
+                    <li class="navbar-text"><i class="fa fa-user fa-lg"></i> <b>Player 2:</b> {{points.player2}}</li>
+                    <li class="navbar-text"><i class="fa fa-gamepad fa-lg"></i> <b>Cards:</b> {{points.cards}}</li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div ng-view></div>
+            </div>
+        </div>
+
+        <div id="kiModal" class="modal fade" role="dialog" ng-controller="KiCtrl">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Choose an AI</h4>
+                    </div>
+                    <div class="modal-body">
+                        <select class="selectpicker" name="mode" ng-model="mode">
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" ng-click="setKi()" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="myModal" class="modal fade" role="dialog" ng-controller="LoadCtrl">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Load Game</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Load the game with the Game ID that was provided when the Game was saved.</label><br>
+                        <input ng-model="gameId" placeholder="Game ID" style="width:100%;" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" ng-click="loadGame()" data-dismiss="modal">Load</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script srC="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular-route.min.js"></script>
+        <script src="@routes.Assets.at("javascripts/webcomponents.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.gracefulWebSocket.js")"></script>
+        <script src="@routes.Assets.at("javascripts/main.js")"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-select.js")"></script>
+    </body>
+</html>
