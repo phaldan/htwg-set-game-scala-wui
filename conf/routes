@@ -14,6 +14,7 @@ GET        /assets/*file                 controllers.Assets.at(path="/public", f
 
 
 GET        /ws                           controllers.HomeController.ws
-GET        /cards.json                   controllers.HomeController.cards()
-GET        /points.json                  controllers.HomeController.points()
+GET        /cards.json                   controllers.HomeController.cards
+GET        /points.json                  controllers.HomeController.points
 GET        /set/:cardOne/:cardTwo/:cardThree controllers.HomeController.set(cardOne: String, cardTwo: String, cardThree: String)
+GET        /reset.json                   controllers.HomeController.reset

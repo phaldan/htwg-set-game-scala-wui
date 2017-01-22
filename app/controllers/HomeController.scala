@@ -66,4 +66,14 @@ class HomeController @Inject() extends Controller {
     }
     Ok(JsBoolean(true))
   }
+
+  def reset: Action[AnyContent] = Action { request =>
+    val id = getSession(request).getSessionId
+    val setController = manager.get(id)
+    val controller = setController.getController
+    controller.createNewGame()
+    setController.getPlayer.keys.foreach(p => controller.addPlayer(p))
+    controller.startGame()
+    Ok(JsBoolean(true))
+  }
 }
