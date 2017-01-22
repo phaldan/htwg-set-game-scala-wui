@@ -1,7 +1,9 @@
 <field class="js-field">
     <h2 style="text-align: center">
-        First read the <a href="#/help" class="btn btn-warning btn-lg">Rules</a> and then try a
-        <button type="button" class="btn btn-warning btn-lg" ng-click="showTip()">Tip</button>
+        First read the <a href="#/help" class="btn btn-warning btn-lg">Rules</a>
+        <span style="display: none">
+            and then try a <button type="button" class="btn btn-warning btn-lg" ng-click="showTip()">Tip</button>
+        </span>
     </h2>
     <button data-key="32" type="button" class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <b>Player {{player}}:</b> Press "Space bar" to select 3 cards
@@ -14,7 +16,7 @@
     </div>
 
     <div style="text-align: center;" ng-controller="SaveCtrl">
-        <button style="margin-top: 10px;" type="button" class="btn btn-warning btn-lg" ng-click="saveGame()">Save Game</button>
+        <button style="margin-top: 10px; display: none" type="button" class="btn btn-warning btn-lg" ng-click="saveGame()">Save Game</button>
     </div>
 
     <modal class="modal fade js-turn" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
