@@ -2,8 +2,8 @@ package controllers
 
 import javax.inject._
 
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString}
-import play.api.mvc.{AnyContent, _}
+import play.api.libs.json._
+import play.api.mvc.{Action, AnyContent, _}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -53,5 +53,17 @@ class HomeController @Inject() extends Controller {
       }
     }
     0
+  }
+
+  def set(cardOne: String, cardTwo: String, cardThree: String): Action[AnyContent] = Action { request =>
+    val id = getSession(request).getSessionId
+    val controller = manager.get(id)
+    val game = controller.getGame
+    val cards = game.cardsInField
+    val selected = cards.filter(c => c.name == cardOne) ++ cards.filter(c => c.name == cardTwo) ++ cards.filter(c => c.name == cardThree)
+    game.player.find(p => p.name == id) match {
+      case Some(value) => controller.getController.checkSet(selected, value)
+    }
+    Ok(JsBoolean(true))
   }
 }

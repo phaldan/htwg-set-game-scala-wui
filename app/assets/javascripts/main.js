@@ -111,8 +111,6 @@
         var $main = $('.js-field');
         var $pressArea = $('body');
         var $modalTurn = $main.find('.js-turn');
-        var $modalSetGood = $main.find('.js-set-good');
-        var $modalSetBad = $main.find('.js-set-bad');
         var $cards = $main.find('.js-cards');
 
         var selectClass = 'selected';
@@ -148,13 +146,7 @@
 
             if ($selectedCards.length == 3) {
                 var url = '/set/' + get(0) + '/' + get(1) + '/' + get(2);
-                $.get(url, function (data) {
-                    if (data) {
-                        $modalSetGood.modal();
-                    } else {
-                        $modalSetBad.modal();
-                    }
-                });
+                $.get(url, function (data) {});
 
                 $selectedCards.removeClass(selectClass);
                 mode = 1;
