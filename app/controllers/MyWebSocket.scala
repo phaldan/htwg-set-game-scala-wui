@@ -19,7 +19,7 @@ class MyWebSocket(private val manager: GameManager) extends Reactor {
     }
     val (out, channel) = Concurrent.broadcast[String]
     Logger.debug(MyWebSocket.Connected.format(session.getSessionId))
-    listenTo(controller)
+    listenTo(controller.getController)
 
     reactions += {
       case e: NewGame =>

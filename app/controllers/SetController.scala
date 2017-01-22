@@ -1,58 +1,27 @@
 package controllers
 
-import javax.inject._
+import akka.actor.ActorSystem
+import de.htwg.se.setGame.controller._
+import de.htwg.se.setGame.model.Game
 
-import play.api.mvc._
-import services.Counter
+import scala.collection.mutable
+import scala.swing.Reactor
 
-/**
-  * This controller demonstrates how to use dependency injection to
-  * bind a component into a controller class. The class creates an
-  * `Action` that shows an incrementing count to users. The [[Counter]]
-  * object is injected by the Guice dependency injection system.
-  */
-@Singleton
-class SetController @Inject()(counter: Counter) extends Controller {
+class SetController(system: ActorSystem) extends Reactor {
+  private var game = None : Option[Game]
+  private val controller = Controller(system)
+  listenTo(controller)
+  private val player = mutable.Map[String, Int]()
 
-  /**
-    * Create an action that responds with the [[Counter]]'s current
-    * count. The result is plain text. This `Action` is mapped to
-    * `GET /count` requests by an entry in the `routes` config file.
-    */
-  def count = Action {
-    Ok(counter.nextCount().toString)
+  reactions += {
+    case e:AddPlayer => game = Some(e.game)
+    case e:PlayerAdded => game = Some(e.game)
+    case e:NewGame => game = Some(e.game)
+    case e:StartGame => game = Some(e.game)
+    case e:UpdateGame => game = Some(e.game)
   }
 
-  def exitApplication = Action {
-    Ok("Exit Application")
-  }
-
-  def createNewGame = Action {
-    Ok("Create new Game")
-  }
-
-
-  def addPlayer(name: String) = Action{
-    Ok("Add new User name : " + name)
-  }
-
-  def cancelAddPlayer() = Action {
-    Ok("Cancel add player")
-  }
-
-  def randomCardsInField() = Action{
-    Ok("Random cards")
-  }
-
-  def finishGame() = Action{
-    Ok("Finish Game")
-  }
-
-  def checkSet(cards: List[String]) = Action{
-    Ok("Cards : " + cards)
-  }
-
-  def startGame() = Action{
-    Ok("Start Game")
-  }
+  def getController: Controller = controller
+  def getPlayer: mutable.Map[String, Int] = player
+  def getGame: Game = game.get
 }

@@ -2,7 +2,6 @@ package controllers
 
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
-import de.htwg.se.setGame.controller.Controller
 import play.api.Logger
 
 import scala.collection.mutable
@@ -12,10 +11,10 @@ import scala.collection.mutable
   */
 class GameManager {
   private val system = ActorSystem("SetGame", ConfigFactory.parseString("akka {}"))
-  private val games = mutable.Map[String, Controller]()
-  private val freeGames = mutable.Stack[Controller]()
+  private val games = mutable.Map[String, SetController]()
+  private val freeGames = mutable.Stack[SetController]()
 
-  def get(session: String): Controller = {
+  def get(session: String): SetController = {
     games.get(session) match {
       case None =>
         newController(session)
@@ -24,7 +23,7 @@ class GameManager {
     }
   }
 
-  private def newController(session: String): Controller = {
+  private def newController(session: String) = {
     val controller = if (freeGames.isEmpty) createPlayer1(session) else createPlayer2(session)
     Logger.debug(GameManager.NewController.format(session, controller.hashCode()))
     games.put(session, controller)
@@ -33,7 +32,11 @@ class GameManager {
   }
 
   private def createPlayer1(session: String) = {
-    val controller = Controller(system)
+    val controller = new SetController(system)
+    controller.getController.createNewGame()
+    controller.getController.addPlayer(session)
+    controller.getController.startGame()
+    controller.getPlayer(session) = 1
     freeGames.push(controller)
     Logger.debug(GameManager.AddPlayer1.format(session))
     controller
@@ -41,6 +44,8 @@ class GameManager {
 
   private def createPlayer2(session: String) = {
     val controller = freeGames.pop()
+    controller.getController.addPlayer(session)
+    controller.getPlayer(session) = 2
     Logger.debug(GameManager.AddPlayer2.format(session))
     controller
   }
