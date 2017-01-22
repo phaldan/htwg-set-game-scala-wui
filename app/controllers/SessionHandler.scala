@@ -1,19 +1,19 @@
 package controllers
 
-import play.api.mvc.{AnyContent, Request, Session}
+import play.api.mvc.Session
 
 /**
   * @author Philipp Daniels
   */
-class SessionHandler(private val request: Request[AnyContent]) {
+class SessionHandler(private val request: Session) {
   private val key = "session"
   private var session = None : Option[Session]
 
   def getSession: Session = {
-    if (request.session.isEmpty || request.session.data.get(key).isEmpty) {
+    if (request.isEmpty || request.data.get(key).isEmpty) {
       session = Some(Session(Map(key -> createSessionId)))
     } else {
-      session = Some(Session(request.session.data))
+      session = Some(Session(request.data))
     }
     session.get
   }
