@@ -34,4 +34,24 @@ class HomeController @Inject() extends Controller {
       }))
     )))
   }
+
+  def points: Action[AnyContent] = Action { request =>
+    val id = getSession(request).getSessionId
+    val controller = manager.get(id)
+    val game = controller.getGame
+    Ok(JsObject(Seq(
+      "player1" -> JsNumber(playerPoints(controller, 1)),
+      "player2" -> JsNumber(playerPoints(controller, 2)),
+      "cards" -> JsNumber(game.cardsInField.size + game.pack.size)
+    )))
+  }
+
+  private def playerPoints(controller: SetController, no: Int): Int = {
+    for ((key, value) <- controller.getPlayer) {
+      if (value == no) {
+        return controller.getGame.player.filter(p => p.name == key).map(p => p.points).sum
+      }
+    }
+    0
+  }
 }
