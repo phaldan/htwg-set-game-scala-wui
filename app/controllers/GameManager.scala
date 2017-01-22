@@ -3,6 +3,7 @@ package controllers
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import de.htwg.se.setGame.controller.Controller
+import play.api.Logger
 
 import scala.collection.mutable
 
@@ -25,22 +26,30 @@ class GameManager {
 
   private def newController(session: String): Controller = {
     val controller = if (freeGames.isEmpty) createPlayer1(session) else createPlayer2(session)
-    println(session + " - new controller -" + controller.hashCode())
+    Logger.debug(GameManager.NewController.format(session, controller.hashCode()))
     games.put(session, controller)
-    println("Manager: " + games.size + " sessions, " + freeGames.size + " open games")
+    Logger.debug(GameManager.Stats.format(games.size, freeGames.size))
     controller
   }
 
   private def createPlayer1(session: String) = {
     val controller = Controller(system)
     freeGames.push(controller)
-    System.out.println(session + " - create as player 1")
+    Logger.debug(GameManager.AddPlayer1.format(session))
     controller
   }
 
   private def createPlayer2(session: String) = {
     val controller = freeGames.pop()
-    System.out.println(session + " - create as player 2")
+    Logger.debug(GameManager.AddPlayer2.format(session))
     controller
   }
+}
+
+object GameManager {
+  val AddPlayer1 = "%s - create as player 1"
+  val AddPlayer2 = "%s - create as player 2"
+  val NewController = "%s - new controller (%d)"
+  val Stats = "Manager: %d running games, %d open games"
+  def apply: GameManager = new GameManager()
 }
