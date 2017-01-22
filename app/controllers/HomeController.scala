@@ -47,12 +47,11 @@ class HomeController @Inject() extends Controller {
   }
 
   private def playerPoints(controller: SetController, no: Int): Int = {
-    for ((key, value) <- controller.getPlayer) {
-      if (value == no) {
-        return controller.getGame.player.filter(p => p.name == key).map(p => p.points).sum
-      }
+    controller.getPlayer.find({case (_, value) => value == no}) match {
+      case None => 0
+      case Some((key, _)) =>
+        controller.getGame.player.filter(p => p.name == key).map(p => p.points).sum
     }
-    0
   }
 
   def set(cardOne: String, cardTwo: String, cardThree: String): Action[AnyContent] = Action { request =>
@@ -62,6 +61,7 @@ class HomeController @Inject() extends Controller {
     val cards = game.cardsInField
     val selected = cards.filter(c => c.name == cardOne) ++ cards.filter(c => c.name == cardTwo) ++ cards.filter(c => c.name == cardThree)
     game.player.find(p => p.name == id) match {
+      case None =>
       case Some(value) => controller.getController.checkSet(selected, value)
     }
     Ok(JsBoolean(true))
